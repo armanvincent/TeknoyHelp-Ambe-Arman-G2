@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Member Dashboard | TeknoyHelp{% endblock %}
+{% block content %}
+<h2>Welcome, {{ user.first_name|default:user.username }}!</h2>
+<p class="text-muted">Member Dashboard: post errands or help other Teknoys.</p>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card h-100"><div class="card-body">
+      <h5>Post an Errand</h5><p class="text-muted">Coming in the next phase.</p>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100"><div class="card-body">
+      <h5>Browse Requests</h5><p class="text-muted">Coming in the next phase.</p>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100"><div class="card-body">
+      <h5>My History</h5><p class="text-muted">Coming in the next phase.</p>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

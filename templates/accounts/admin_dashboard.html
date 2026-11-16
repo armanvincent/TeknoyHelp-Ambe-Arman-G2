@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | TeknoyHelp{% endblock %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">Total Users</h6><h2>{{ total_users }}</h2></div></div></div>
+  <div class="col-md-4"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">Members</h6><h2>{{ total_members }}</h2></div></div></div>
+  <div class="col-md-4"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">Admins</h6><h2>{{ total_admins }}</h2></div></div></div>
+</div>
+<div class="card">
+  <div class="card-header">Newest users</div>
+  <ul class="list-group list-group-flush">
+    {% for u in latest_users %}
+      <li class="list-group-item d-flex justify-content-between">
+        <span>{{ u.username }} ({{ u.email }})</span>
+        <span class="badge bg-secondary">{{ u.get_role_display }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
