@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}{{ errand.title }} | TeknoyHelp{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <span class="badge bg-secondary">{{ errand.category.name }}</span>
+          <span class="badge bg-{{ errand.badge_class }}">{{ errand.get_status_display }}</span>
+        </div>
+        <h3 class="mt-2">{{ errand.title }}</h3>
+        <p>{{ errand.description|linebreaksbr }}</p>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Location:</strong> {{ errand.location }}</li>
+          <li class="list-group-item"><strong>Deadline:</strong> {{ errand.deadline|date:"F d, Y h:i A" }}</li>
+          <li class="list-group-item"><strong>Reward:</strong> <span class="text-success fw-bold">&#8369;{{ errand.reward }}</span></li>
+          <li class="list-group-item"><strong>Posted by:</strong> {{ errand.owner.get_full_name|default:errand.owner.username }}</li>
+          {% if errand.taker %}
+            <li class="list-group-item"><strong>Task taker:</strong> {{ errand.taker.get_full_name|default:errand.taker.username }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-3">
+      <div class="card-header">Actions</div>
+      <div class="card-body d-grid gap-2">
+        {% if is_owner and errand.status == 'open' %}
+          <a href="{% url 'errand_edit' errand.pk %}" class="btn btn-outline-primary">Edit errand</a>
+          <a href="{% url 'errand_delete' errand.pk %}" class="btn btn-outline-danger">Delete errand</a>
+        {% endif %}
+        {% include 'errands/_workflow_actions.html' %}
+      </div>
+    </div>
+
+    {% if is_owner and errand.taker %}
+      <div class="card shadow-sm mb-3">
+        <div class="card-header">Task taker contact</div>
+        <div class="card-body">{{ errand.taker.contact_number|default:"No contact number provided" }}</div>
+      </div>
+    {% endif %}
+    {% if is_taker %}
+      <div class="card shadow-sm mb-3">
+        <div class="card-header">Request owner contact</div>
+        <div class="card-body">{{ errand.owner.contact_number|default:"No contact number provided" }}</div>
+      </div>
+    {% endif %}
+
+    <div class="card shadow-sm">
+      <div class="card-header">Progress</div>
+      <ul class="list-group list-group-flush small">
+        <li class="list-group-item">Posted: {{ errand.created_at|date:"M d, Y h:i A" }}</li>
+        {% if errand.accepted_at %}<li class="list-group-item">Accepted: {{ errand.accepted_at|date:"M d, Y h:i A" }}</li>{% endif %}
+        {% if errand.completed_at %}<li class="list-group-item">Completed: {{ errand.completed_at|date:"M d, Y h:i A" }}</li>{% endif %}
+        {% if errand.confirmed_at %}<li class="list-group-item">Reward confirmed: {{ errand.confirmed_at|date:"M d, Y h:i A" }}</li>{% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
