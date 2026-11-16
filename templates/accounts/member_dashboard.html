@@ -2,22 +2,65 @@
 {% block title %}Member Dashboard | TeknoyHelp{% endblock %}
 {% block content %}
 <h2>Welcome, {{ user.first_name|default:user.username }}!</h2>
-<p class="text-muted">Member Dashboard: post errands or help other Teknoys.</p>
+<p class="text-muted">Post errands or help other Teknoys earn a reward.</p>
+
+{% if needs_confirmation %}
+  <div class="alert alert-warning">
+    You have {{ needs_confirmation }} completed errand{{ needs_confirmation|pluralize }} waiting for your confirmation.
+    <a href="{% url 'my_requests' %}?status=completed" class="alert-link">Review now</a>
+  </div>
+{% endif %}
+
+<div class="d-flex gap-2 mb-4 flex-wrap">
+  <a href="{% url 'errand_create' %}" class="btn btn-primary">Post an Errand</a>
+  <a href="{% url 'errand_list' %}" class="btn btn-outline-primary">Browse Errands</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">My open requests</h6><h2>{{ posted_open }}</h2></div></div></div>
+  <div class="col-6 col-md-3"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">Requests in progress</h6><h2>{{ posted_in_progress }}</h2></div></div></div>
+  <div class="col-6 col-md-3"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">My active tasks</h6><h2>{{ tasks_active }}</h2></div></div></div>
+  <div class="col-6 col-md-3"><div class="card text-center"><div class="card-body">
+    <h6 class="text-muted">Total earned</h6><h2 class="text-success">&#8369;{{ total_earned }}</h2></div></div></div>
+</div>
+
 <div class="row g-3">
-  <div class="col-md-4">
-    <div class="card h-100"><div class="card-body">
-      <h5>Post an Errand</h5><p class="text-muted">Coming in the next phase.</p>
-    </div></div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <span>Recent requests</span><a href="{% url 'my_requests' %}">View all</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for e in recent_posted %}
+          <li class="list-group-item d-flex justify-content-between">
+            <a href="{% url 'errand_detail' e.pk %}">{{ e.title }}</a>
+            <span class="badge bg-{{ e.badge_class }}">{{ e.get_status_display }}</span>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted">You have not posted any errands yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
-  <div class="col-md-4">
-    <div class="card h-100"><div class="card-body">
-      <h5>Browse Requests</h5><p class="text-muted">Coming in the next phase.</p>
-    </div></div>
-  </div>
-  <div class="col-md-4">
-    <div class="card h-100"><div class="card-body">
-      <h5>My History</h5><p class="text-muted">Coming in the next phase.</p>
-    </div></div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <span>Recent tasks</span><a href="{% url 'my_tasks' %}">View all</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for e in recent_tasks %}
+          <li class="list-group-item d-flex justify-content-between">
+            <a href="{% url 'errand_detail' e.pk %}">{{ e.title }}</a>
+            <span class="badge bg-{{ e.badge_class }}">{{ e.get_status_display }}</span>
+          </li>
+        {% empty %}
+          <li class="list-group-item text-muted">You have not accepted any errands yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 </div>
 {% endblock %}

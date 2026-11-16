@@ -1,1 +1,36 @@
-{# Accept, complete and confirm buttons are added in the next feature branch. #}
+{% if can_accept %}
+  <form method="post" action="{% url 'errand_accept' errand.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success w-100">Accept this errand</button>
+  </form>
+{% endif %}
+
+{% if is_taker and errand.status == 'accepted' %}
+  <form method="post" action="{% url 'errand_complete' errand.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success w-100">Mark as completed</button>
+  </form>
+  <form method="post" action="{% url 'errand_withdraw' errand.pk %}" onsubmit="return confirm('Withdraw from this errand?');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-secondary w-100">Withdraw</button>
+  </form>
+{% endif %}
+
+{% if is_taker and errand.status == 'completed' %}
+  <div class="alert alert-info mb-0">Waiting for the owner to confirm your reward.</div>
+{% endif %}
+
+{% if is_owner and errand.status == 'completed' %}
+  <form method="post" action="{% url 'errand_confirm' errand.pk %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success w-100">Confirm reward given</button>
+  </form>
+{% endif %}
+
+{% if errand.status == 'confirmed' %}
+  <div class="alert alert-dark mb-0">This errand is finished.</div>
+{% endif %}
+
+{% if is_admin %}
+  <a href="{% url 'admin_errand_delete' errand.pk %}" class="btn btn-outline-danger">Delete (admin)</a>
+{% endif %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Manage Errands | TeknoyHelp{% endblock %}
+{% block content %}
+<h2 class="mb-3">Manage Errands</h2>
+
+<form method="get" class="d-flex gap-2 mb-3 flex-wrap">
+  <input type="text" name="q" value="{{ q }}" class="form-control w-auto" placeholder="Search title or username">
+  <select name="status" class="form-select w-auto">
+    <option value="">All statuses</option>
+    {% for value, label in statuses %}
+      <option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-dark">Filter</button>
+  <a href="{% url 'manage_errands' %}" class="btn btn-outline-secondary">Clear</a>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle bg-white">
+    <thead>
+      <tr>
+        <th>Title</th><th>Owner</th><th>Taker</th><th>Reward</th><th>Status</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in page_obj %}
+        <tr>
+          <td>{{ e.title }}</td>
+          <td>{{ e.owner.username }}</td>
+          <td>{{ e.taker.username|default:"-" }}</td>
+          <td>&#8369;{{ e.reward }}</td>
+          <td><span class="badge bg-{{ e.badge_class }}">{{ e.get_status_display }}</span></td>
+          <td class="text-end">
+            <a href="{% url 'errand_detail' e.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+            <a href="{% url 'admin_errand_delete' e.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">No errands found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include 'errands/_pagination.html' %}
+{% endblock %}
