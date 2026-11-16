@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | TeknoyHelp{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body text-center">
+        {% if user.profile_photo %}
+          <img src="{{ user.profile_photo.url }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;" alt="Profile photo">
+        {% else %}
+          <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width:120px;height:120px;font-size:48px;">
+            {{ user.username|first|upper }}
+          </div>
+        {% endif %}
+        <h4>{{ user.get_full_name|default:user.username }}</h4>
+        <span class="badge bg-primary mb-3">{{ user.get_role_display }}</span>
+        <ul class="list-group list-group-flush text-start">
+          <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+          <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+          <li class="list-group-item"><strong>Contact:</strong> {{ user.contact_number|default:"Not set" }}</li>
+          <li class="list-group-item"><strong>Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</li>
+        </ul>
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary mt-3">Edit Profile</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
