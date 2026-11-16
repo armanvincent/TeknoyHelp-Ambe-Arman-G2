@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Delete Errand | TeknoyHelp{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm border-danger">
+      <div class="card-body">
+        <h4 class="text-danger">Delete this errand?</h4>
+        <p>You are about to delete <strong>{{ errand.title }}</strong>. This cannot be undone.</p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, delete</button>
+          <a href="{% url 'errand_detail' errand.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+<form method="get" class="d-flex gap-2 mb-3">
+  <select name="status" class="form-select w-auto">
+    <option value="">All statuses</option>
+    {% for value, label in statuses %}
+      <option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-outline-secondary">Filter</button>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle bg-white">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Reward</th>
+        <th>Deadline</th>
+        <th>{% if mode == 'requests' %}Task taker{% else %}Posted by{% endif %}</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in page_obj %}
+        <tr>
+          <td>{{ e.title }}</td>
+          <td>{{ e.category.name }}</td>
+          <td>&#8369;{{ e.reward }}</td>
+          <td>{{ e.deadline|date:"M d, Y h:i A" }}</td>
+          <td>
+            {% if mode == 'requests' %}{{ e.taker.username|default:"-" }}{% else %}{{ e.owner.username }}{% endif %}
+          </td>
+          <td><span class="badge bg-{{ e.badge_class }}">{{ e.get_status_display }}</span></td>
+          <td class="text-end">
+            <a href="{% url 'errand_detail' e.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+            {% if mode == 'requests' and e.status == 'open' %}
+              <a href="{% url 'errand_edit' e.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Nothing here yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% include 'errands/_pagination.html' %}

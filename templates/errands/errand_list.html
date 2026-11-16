@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Browse Errands | TeknoyHelp{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Browse Errands</h2>
+  <a href="{% url 'errand_create' %}" class="btn btn-primary">Post an Errand</a>
+</div>
+
+<form method="get" class="card card-body mb-4">
+  <div class="row g-2">
+    <div class="col-md-5">{{ filter_form.q }}</div>
+    <div class="col-md-4">{{ filter_form.category }}</div>
+    <div class="col-md-3">{{ filter_form.sort }}</div>
+    <div class="col-md-3">{{ filter_form.min_reward }}</div>
+    <div class="col-md-3">{{ filter_form.max_reward }}</div>
+    <div class="col-md-6 d-flex gap-2">
+      <button type="submit" class="btn btn-dark">Search</button>
+      <a href="{% url 'errand_list' %}" class="btn btn-outline-secondary">Clear</a>
+    </div>
+  </div>
+  {% if filter_form.errors %}
+    <div class="text-danger small mt-2">{{ filter_form.errors }}</div>
+  {% endif %}
+</form>
+
+<div class="row g-3">
+  {% for e in page_obj %}
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <span class="badge bg-secondary mb-2">{{ e.category.name }}</span>
+          <h5 class="card-title">{{ e.title }}</h5>
+          <p class="text-muted small mb-1">Location: {{ e.location }}</p>
+          <p class="text-muted small mb-1">Due: {{ e.deadline|date:"M d, Y h:i A" }}</p>
+          <p class="text-muted small">Posted by {{ e.owner.username }}</p>
+          <h5 class="text-success mb-0">&#8369;{{ e.reward }}</h5>
+        </div>
+        <div class="card-footer bg-white">
+          <a href="{% url 'errand_detail' e.pk %}" class="btn btn-outline-primary btn-sm w-100">View details</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12"><div class="alert alert-info">No errands found.</div></div>
+  {% endfor %}
+</div>
+
+{% include 'errands/_pagination.html' %}
+{% endblock %}
