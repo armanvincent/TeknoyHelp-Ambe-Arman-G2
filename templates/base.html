@@ -21,6 +21,9 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'errand_list' %}">Browse Errands</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'errand_create' %}">Post Errand</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'my_requests' %}">My Requests</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'my_tasks' %}">My Tasks</a></li>
+          {% elif user.role == 'admin' %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'manage_errands' %}">Manage Errands</a></li>
           {% endif %}
           <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
           {% if user.role == 'admin' %}
